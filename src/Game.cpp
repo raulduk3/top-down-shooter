@@ -20,7 +20,6 @@ void Game::processEvents() {
         if (event.type == sf::Event::Closed)
             window.close();
     }
-    player.handleInput();
 }
 
 void Game::update(sf::Time deltaTime) {

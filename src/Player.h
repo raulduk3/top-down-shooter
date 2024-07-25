@@ -4,7 +4,7 @@
 class Player {
 public:
     Player();
-    void handleInput();
+    void handleInput(sf::Time deltaTime);
     void update(sf::Time deltaTime);
     void render(sf::RenderWindow& window);
 
