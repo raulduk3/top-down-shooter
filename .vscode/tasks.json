@@ -1,0 +1,23 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build SFML Project",
+            "type": "shell",
+            "command": "${workspaceFolder}/.vscode/build.sh",
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "Run SFML Program",
+            "type": "shell",
+            "command": "${workspaceFolder}/build/bin/${workspaceFolderBasename}",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": "Build SFML Project",
+            "problemMatcher": []
+        }
+    ]
+}

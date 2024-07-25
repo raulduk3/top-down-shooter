@@ -6,7 +6,7 @@ const int FRAME_HEIGHT = 34;
 const int NUM_FRAMES = 3;
 const sf::Time FRAME_DURATION = sf::seconds(0.15f);
 
-Player::Player() 
+Player::Player()
     : speed(100.0f),  // Reduced speed for smoother movement
         maxSpeed(150.0f),  // Set a reasonable max speed
         accelerationRate(600.0f),  // Balanced acceleration
@@ -31,15 +31,15 @@ void Player::handleInput(sf::Time deltaTime) {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
         direction = Up;
         acceleration.y = -accelerationRate;
-    } 
+    }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
         direction = Down;
         acceleration.y = accelerationRate;
-    } 
+    }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
         direction = Left;
         acceleration.x = -accelerationRate;
-    } 
+    }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
         direction = Right;
         acceleration.x = accelerationRate;
@@ -47,17 +47,18 @@ void Player::handleInput(sf::Time deltaTime) {
 
     if (acceleration.x != 0 || acceleration.y != 0) {
         lastDirection = direction;
+
+        // Normalize the acceleration vector
+        float length = std::sqrt(acceleration.x * acceleration.x + acceleration.y * acceleration.y);
+        if (length != 0) {
+            acceleration.x /= length;
+            acceleration.y /= length;
+            acceleration *= accelerationRate;
+        }
     }
 
     // Apply acceleration
-    velocity += acceleration * deltaTime.asSeconds();
-
-    // Normalize velocity for diagonal movement
-    if (velocity.x != 0 && velocity.y != 0) {
-        float factor = 1.25f;
-        velocity.x *= factor;
-        velocity.y *= factor;
-    }
+    velocity += acceleration * frameTime.asSeconds();
 
     // Clamp velocity to max speed
     if (std::abs(velocity.x) > maxSpeed) {
@@ -70,20 +71,20 @@ void Player::handleInput(sf::Time deltaTime) {
     // Apply deceleration when no input
     if (acceleration.x == 0) {
         if (velocity.x > 0) {
-            velocity.x -= decelerationRate * deltaTime.asSeconds();
+            velocity.x -= decelerationRate * frameTime.asSeconds();
             if (velocity.x < 0) velocity.x = 0;
         } else if (velocity.x < 0) {
-            velocity.x += decelerationRate * deltaTime.asSeconds();
+            velocity.x += decelerationRate * frameTime.asSeconds();
             if (velocity.x > 0) velocity.x = 0;
         }
     }
 
     if (acceleration.y == 0) {
         if (velocity.y > 0) {
-            velocity.y -= decelerationRate * deltaTime.asSeconds();
+            velocity.y -= decelerationRate * frameTime.asSeconds();
             if (velocity.y < 0) velocity.y = 0;
         } else if (velocity.y < 0) {
-            velocity.y += decelerationRate * deltaTime.asSeconds();
+            velocity.y += decelerationRate * frameTime.asSeconds();
             if (velocity.y > 0) velocity.y = 0;
         }
     }
@@ -106,7 +107,7 @@ void Player::updateAnimation(sf::Time deltaTime) {
 
     // Reset to first frame if not moving
     if (velocity == sf::Vector2f(0.0f, 0.0f)) {
-        currentFrame = 0;
+        currentFrame = 1;
         sprite.setTextureRect(getAnimationFrame(lastDirection, currentFrame));
     }
 }
