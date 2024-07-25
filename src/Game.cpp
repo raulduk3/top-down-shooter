@@ -1,0 +1,34 @@
+#include "Game.h"
+
+Game::Game() : window(sf::VideoMode(800, 600), "Top-Down Shooter"), player() {
+    window.setFramerateLimit(144);
+}
+
+void Game::run() {
+    sf::Clock clock;
+    while (window.isOpen()) {
+        processEvents();
+        sf::Time deltaTime = clock.restart();
+        update(deltaTime);
+        render();
+    }
+}
+
+void Game::processEvents() {
+    sf::Event event;
+    while (window.pollEvent(event)) {
+        if (event.type == sf::Event::Closed)
+            window.close();
+    }
+    player.handleInput();
+}
+
+void Game::update(sf::Time deltaTime) {
+    player.update(deltaTime);
+}
+
+void Game::render() {
+    window.clear();
+    player.render(window);
+    window.display();
+}
